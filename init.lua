@@ -282,6 +282,11 @@ require('lazy').setup({
     },
   },
   {
+    'mrcjkb/rustaceanvim',
+    version = '^6', -- Recommended
+    lazy = false, -- This plugin is already lazy
+  },
+  {
     'seblyng/roslyn.nvim',
     ft = 'cs',
     ---@module 'roslyn.config'
@@ -796,6 +801,8 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'prettier',
         'csharpier',
+        'rust-analyzer',
+        'codelldb',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
