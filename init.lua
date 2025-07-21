@@ -288,23 +288,38 @@ require('lazy').setup({
   },
   {
     'seblyng/roslyn.nvim',
-    ft = 'cs',
-    ---@module 'roslyn.config'
-    ---@type RoslynNvimConfig
-    opts = {
-      filewatching = 'roslyn',
-      choose_target = function(target)
-        return vim.iter(target):find(function(item)
-          if string.match(item, 'Lumen.sln') then
-            return item
-          end
-        end)
-      end,
-      config = {
+    ft = { 'cs', 'razor' },
+    dependencies = {
+      {
+        -- By loading as a dependencies, we ensure that we are available to set
+        -- the handlers for Roslyn.
+        'tris203/rzls.nvim',
+        config = true,
+      },
+    },
+    config = function()
+      local mason_registry = require 'mason-registry'
+
+      local rzls_path = vim.fn.expand '$MASON/packages/rzls/libexec'
+      local cmd = {
+        'roslyn',
+        '--stdio',
+        '--logLevel=Information',
+        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
+        '--razorSourceGenerator=' .. vim.fs.joinpath(rzls_path, 'Microsoft.CodeAnalysis.Razor.Compiler.dll'),
+        '--razorDesignTimePath=' .. vim.fs.joinpath(rzls_path, 'Targets', 'Microsoft.NET.Sdk.Razor.DesignTime.targets'),
+        '--extension',
+        vim.fs.joinpath(rzls_path, 'RazorExtension', 'Microsoft.VisualStudioCode.RazorExtension.dll'),
+      }
+
+      vim.lsp.config('roslyn', {
+        cmd = cmd,
+        handlers = require 'rzls.roslyn_handlers',
         settings = {
           ['csharp|inlay_hints'] = {
             csharp_enable_inlay_hints_for_implicit_object_creation = true,
             csharp_enable_inlay_hints_for_implicit_variable_types = true,
+
             csharp_enable_inlay_hints_for_lambda_parameter_types = true,
             csharp_enable_inlay_hints_for_types = true,
             dotnet_enable_inlay_hints_for_indexer_parameters = true,
@@ -320,8 +335,26 @@ require('lazy').setup({
             dotnet_enable_references_code_lens = true,
           },
         },
-      },
-    },
+      })
+      vim.lsp.enable 'roslyn'
+    end,
+    init = function()
+      -- We add the Razor file types before the plugin loads.
+      vim.filetype.add {
+        extension = {
+          razor = 'razor',
+          cshtml = 'razor',
+        },
+      }
+    end,
+    filewatching = 'roslyn',
+    choose_target = function(target)
+      return vim.iter(target):find(function(item)
+        if string.match(item, 'Lumen.sln') then
+          return item
+        end
+      end)
+    end,
   },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
@@ -484,11 +517,12 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          file_ignore_patterns = { '%__virtual.cs$' },
+          --   mappings = {
+          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          --   },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -803,6 +837,8 @@ require('lazy').setup({
         'csharpier',
         'rust-analyzer',
         'codelldb',
+        'html-lsp',
+        'rzls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -965,25 +1001,12 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
+  {
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'tomasiser/vim-code-dark',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'codedark'
     end,
   },
 
