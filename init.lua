@@ -258,6 +258,7 @@ require('lazy').setup({
   {
     'rmagatti/auto-session',
     lazy = false,
+    enabled = false,
 
     ---enables autocomplete for opts
     ---@module "auto-session"
@@ -272,7 +273,7 @@ require('lazy').setup({
             if vim.api.nvim_buf_is_valid(buf) then
               local name = vim.api.nvim_buf_get_name(buf)
               -- Check for Roslyn URIs
-              if name:match '^roslyn%-source%-generated://' or name:match '^[%w-]+://' then -- Any URI scheme
+              if name:match '^roslyn%-source%-generated://' or name:match '%__virtual.cs$' or name:match '^[%w-]+://' then -- Any URI scheme
                 vim.api.nvim_buf_delete(buf, { force = true })
               end
             end
