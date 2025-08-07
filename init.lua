@@ -282,6 +282,7 @@ require('lazy').setup({
       },
     },
   },
+  'ThePrimeagen/vim-be-good',
   {
     'mrcjkb/rustaceanvim',
     version = '^6', -- Recommended
