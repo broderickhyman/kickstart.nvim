@@ -841,6 +841,7 @@ require('lazy').setup({
         'codelldb',
         'html-lsp',
         'rzls',
+        'roslyn',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
