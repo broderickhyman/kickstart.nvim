@@ -352,6 +352,11 @@ require('lazy').setup({
     lazy = false, -- This plugin is already lazy
   },
   {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
+  },
+  {
     'seblyng/roslyn.nvim',
     ft = { 'cs', 'razor' },
     dependencies = {
@@ -905,6 +910,7 @@ require('lazy').setup({
         'html-lsp',
         'rzls',
         'roslyn',
+        'angular-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -964,6 +970,10 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        javascript = { 'prettier' },
+        javascriptreact = { 'prettier' },
       },
     },
   },
