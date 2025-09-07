@@ -995,6 +995,8 @@ require('lazy').setup({
         typescriptreact = { 'prettier' },
         javascript = { 'prettier' },
         javascriptreact = { 'prettier' },
+        html = { 'prettier' },
+        htmlangular = { 'prettier' },
       },
     },
   },
