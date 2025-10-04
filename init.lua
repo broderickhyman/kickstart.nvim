@@ -221,8 +221,9 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
-vim.keymap.set('x', 'p', '"_dp')
-vim.keymap.set('x', 'P', '"_dP')
+-- Paste without overriding buffer
+-- vim.keymap.set('x', 'p', '"_dp')
+-- vim.keymap.set('x', 'P', '"_dP')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -902,6 +903,9 @@ require('lazy').setup({
             },
           },
         },
+        -- ts_ls = {
+        --   filetypes = { 'javascript' },
+        -- },
       }
 
       -- Ensure the servers and tools above are installed
@@ -935,6 +939,8 @@ require('lazy').setup({
         'roslyn',
         'angular-language-server',
         'css-lsp',
+        'ts_ls',
+        'openscad-lsp',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
