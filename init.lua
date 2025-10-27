@@ -939,7 +939,7 @@ require('lazy').setup({
         'roslyn',
         'angular-language-server',
         'css-lsp',
-        'ts_ls',
+        -- 'ts_ls',
         'openscad-lsp',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
