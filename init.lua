@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,7 +110,16 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
+
+  if vim.fn.has 'win32' == 1 then
+    vim.o.shell = 'pwsh'
+    vim.o.shellcmdflag = '-Command'
+    vim.o.shellquote = ''
+    vim.o.shellxquote = ''
+  else
+    vim.o.shell = '/bin/bash'
+  end
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -156,7 +165,14 @@ do
   --   See `:help lua-options`
   --   and `:help lua-guide-options`
   vim.o.list = true
-  vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+  vim.opt.listchars = {
+    -- tab = '» ',
+    tab = '  ',
+    trail = '·',
+    nbsp = '␣',
+  }
+
+  vim.o.tabstop = 2
 
   -- Preview substitutions live, as you type!
   vim.o.inccommand = 'split'
@@ -223,16 +239,20 @@ do
   --  Use CTRL+<hjkl> to switch between windows
   --
   --  See `:help wincmd` for a list of all window commands
-  vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-  vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-  vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-  vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+  -- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+  -- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+  -- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+  -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
   -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
   -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
   -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
   -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
   -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+  -- Paste without overriding buffer
+  -- vim.keymap.set('x', 'p', '"_dp')
+  -- vim.keymap.set('x', 'P', '"_dP')
 
   -- [[ Basic Autocommands ]]
   --  See `:help lua-guide-autocommands`
@@ -378,23 +398,9 @@ do
   }
 
   -- [[ Colorscheme ]]
-  -- You can easily change to a different colorscheme.
-  -- Change the name of the colorscheme plugin below, and then
-  -- change the command under that to load whatever the name of that colorscheme is.
-  --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'folke/tokyonight.nvim' }
-  ---@diagnostic disable-next-line: missing-fields
-  require('tokyonight').setup {
-    styles = {
-      comments = { italic = false }, -- Disable italics in comments
-    },
-  }
-
-  -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  vim.pack.add { gh 'tomasiser/vim-code-dark' }
+  vim.cmd.colorscheme 'codedark'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -441,6 +447,51 @@ do
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
+
+  -- [[ Session Management ]] (disabled)
+  -- vim.pack.add { gh 'rmagatti/auto-session' }
+  -- require('auto-session').setup {
+  --   pre_save_cmds = {
+  --     function()
+  --       for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+  --         if vim.api.nvim_buf_is_valid(buf) then
+  --           local name = vim.api.nvim_buf_get_name(buf)
+  --           if name:match '^roslyn%-source%-generated://' or name:match '%__virtual.cs$' or name:match '^[%w-]+://' then
+  --             vim.api.nvim_buf_delete(buf, { force = true })
+  --           end
+  --         end
+  --       end
+  --     end,
+  --   },
+  -- }
+
+  -- [[ Harpoon - Quick file navigation ]]
+  -- vim.pack.add {
+  --   { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2' },
+  --   gh 'nvim-lua/plenary.nvim',
+  -- }
+  -- local harpoon = require 'harpoon'
+  -- harpoon:setup()
+  --
+  -- vim.keymap.set('n', '<leader>A', function() harpoon:list():prepend() end, { desc = 'Prepend to harpoon' })
+  -- vim.keymap.set('n', '<leader>a', function() harpoon:list():add() end, { desc = 'Add to harpoon' })
+  -- vim.keymap.set('n', '<leader>e', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+  --
+  -- vim.keymap.set('n', '<C-j>', function() harpoon:list():select(1) end)
+  -- vim.keymap.set('n', '<C-k>', function() harpoon:list():select(2) end)
+  -- vim.keymap.set('n', '<C-l>', function() harpoon:list():select(3) end)
+  -- vim.keymap.set('n', '<C-;>', function() harpoon:list():select(4) end)
+  --
+  -- vim.keymap.set('n', '<leader><C-j>', function() harpoon:list():replace_at(1) end)
+  -- vim.keymap.set('n', '<leader><C-k>', function() harpoon:list():replace_at(2) end)
+  -- vim.keymap.set('n', '<leader><C-l>', function() harpoon:list():replace_at(3) end)
+  -- vim.keymap.set('n', '<leader><C-;>', function() harpoon:list():replace_at(4) end)
+  --
+  -- vim.keymap.set('n', '<C-S-P>', function() harpoon:list():prev() end)
+  -- vim.keymap.set('n', '<C-S-N>', function() harpoon:list():next() end)
+  --
+  -- -- [[ Misc ]]
+  -- vim.pack.add { gh 'ThePrimeagen/vim-be-good' }
 end
 
 -- ============================================================
@@ -488,11 +539,12 @@ do
     -- You can put your default mappings / updates / etc. in here
     --  All the info you're looking for is in `:help telescope.setup()`
     --
-    -- defaults = {
-    --   mappings = {
-    --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-    --   },
-    -- },
+    defaults = {
+      file_ignore_patterns = { '%__virtual.cs$' },
+      --   mappings = {
+      --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+      --   },
+    },
     -- pickers = {}
     extensions = {
       ['ui-select'] = { require('telescope.themes').get_dropdown() },
@@ -687,15 +739,11 @@ do
   ---@type table<string, vim.lsp.Config>
   local servers = {
     -- clangd = {},
-    -- gopls = {},
     -- pyright = {},
     -- rust_analyzer = {},
-    --
-    -- Some languages (like typescript) have entire language plugins that can be useful:
-    --    https://github.com/pmizio/typescript-tools.nvim
-    --
-    -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    -- ts_ls = {
+    --   filetypes = { 'javascript' },
+    -- },
 
     stylua = {}, -- Used to format Lua code
 
@@ -742,7 +790,12 @@ do
   }
 
   -- Automatically install LSPs and related tools to stdpath for Neovim
-  require('mason').setup {}
+  require('mason').setup {
+    registries = {
+      'github:mason-org/mason-registry',
+      'github:Crashdummyy/mason-registry',
+    },
+  }
 
   -- Ensure the servers and tools above are installed
   --
@@ -751,10 +804,22 @@ do
   --    :Mason
   --
   -- You can press `g?` for help in this menu.
+  if vim.fn.executable 'go' == 1 then servers.gopls = {} end
+
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
-    -- You can add other tools here that you want Mason to install
+    'stylua',
+    'prettier',
+    'rust-analyzer',
+    'codelldb',
+    'html-lsp',
+    'roslyn',
+    'angular-language-server',
+    'css-lsp',
+    -- 'ts_ls',
+    'openscad-lsp',
   })
+  if vim.fn.executable 'dotnet' == 1 then vim.list_extend(ensure_installed, { 'csharpier' }) end
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -762,6 +827,20 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+
+  -- [[ Rust LSP ]]
+  vim.pack.add { { src = gh 'mrcjkb/rustaceanvim', version = vim.version.range '6.*' } }
+
+  -- [[ TypeScript LSP ]]
+  vim.pack.add {
+    gh 'pmizio/typescript-tools.nvim',
+    gh 'nvim-lua/plenary.nvim',
+  }
+  require('typescript-tools').setup {}
+
+  -- [[ C# LSP (Roslyn) ]]
+  vim.pack.add { gh 'seblyng/roslyn.nvim' }
+  require('roslyn').setup {}
 end
 
 -- ============================================================
@@ -790,12 +869,20 @@ do
     },
     -- You can also specify external formatters in here.
     formatters_by_ft = {
-      -- rust = { 'rustfmt' },
+      lua = { 'stylua' },
+      scss = { 'prettier' },
+      cs = { 'csharpier' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
+      javascript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      html = { 'prettier' },
+      htmlangular = { 'prettier' },
     },
   }
 
@@ -846,7 +933,7 @@ do
       -- <c-k>: Toggle signature help
       --
       -- See `:help blink-cmp-config-keymap` for defining your own keymap
-      preset = 'default',
+      preset = 'super-tab',
 
       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -963,14 +1050,12 @@ do
   -- require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.neo-tree'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
