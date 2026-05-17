@@ -824,7 +824,6 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -846,7 +845,9 @@ require('lazy').setup({
         --   filetypes = { 'javascript' },
         -- },
       }
-
+      if vim.fn.executable 'go' == 1 then
+        servers.gopls = {}
+      end
       -- Ensure the servers and tools above are installed
       --
       -- To check the current status of installed tools and/or manually install
@@ -870,7 +871,6 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'prettier',
-        'csharpier',
         'rust-analyzer',
         'codelldb',
         'html-lsp',
@@ -880,6 +880,11 @@ require('lazy').setup({
         -- 'ts_ls',
         'openscad-lsp',
       })
+      if vim.fn.executable 'dotnet' == 1 then
+        vim.list_extend(ensure_installed, {
+          'csharpier',
+        })
+      end
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
