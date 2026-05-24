@@ -739,7 +739,7 @@ do
   ---@type table<string, vim.lsp.Config>
   local servers = {
     -- clangd = {},
-    -- pyright = {},
+    pyright = {},
     -- rust_analyzer = {},
     -- ts_ls = {
     --   filetypes = { 'javascript' },
@@ -818,6 +818,7 @@ do
     'css-lsp',
     -- 'ts_ls',
     'openscad-lsp',
+    'pyright'
   })
   if vim.fn.executable 'dotnet' == 1 then vim.list_extend(ensure_installed, { 'csharpier' }) end
 
