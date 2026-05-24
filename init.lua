@@ -824,7 +824,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         lua_ls = {
@@ -841,6 +841,7 @@ require('lazy').setup({
             },
           },
         },
+        astro = {},
         -- ts_ls = {
         --   filetypes = { 'javascript' },
         -- },
@@ -879,6 +880,8 @@ require('lazy').setup({
         'css-lsp',
         -- 'ts_ls',
         'openscad-lsp',
+        'astro-language-server',
+        'pyright',
       })
       if vim.fn.executable 'dotnet' == 1 then
         vim.list_extend(ensure_installed, {
@@ -949,6 +952,7 @@ require('lazy').setup({
         javascriptreact = { 'prettier' },
         html = { 'prettier' },
         htmlangular = { 'prettier' },
+        astro = { 'prettier' },
       },
     },
   },
